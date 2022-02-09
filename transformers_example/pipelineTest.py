@@ -14,9 +14,11 @@ results = classifier(["We are very happy to show you the Transformers library.",
 for result in results:
     print(result)
 
-tokens = tokenizer.tokenize("We are very happy to show you the Transformers library.")
+tokens = tokenizer.tokenize(
+    "We are very happy to show you the Transformers library.")
 token_ids = tokenizer.convert_tokens_to_ids(tokens)
-input_ids = tokenizer("We are very happy to show you the Transformers library.")
+input_ids = tokenizer(
+    "We are very happy to show you the Transformers library.")
 
 print(f'   Tokens: {tokens}')
 print(f'Token IDs: {token_ids}')
@@ -24,7 +26,8 @@ print(f'Input IDs: {input_ids}')
 
 X_train = ["We are very happy to show you the Transformers library.",
            "We hope you don't hate it."]
-batch = tokenizer(X_train, padding=True, truncation=True, max_length=512,return_tensors="pt")
+batch = tokenizer(X_train, padding=True, truncation=True,
+                  max_length=512, return_tensors="pt")
 
 with torch.no_grad():
     outputs = model(**batch, labels=torch.tensor([1, 0]))
@@ -38,4 +41,3 @@ with torch.no_grad():
     print('-' * 50)
     labels = [model.config.id2label[label_id] for label_id in labels.tolist()]
     print(labels)
-
