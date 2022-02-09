@@ -32,12 +32,9 @@ batch = tokenizer(X_train, padding=True, truncation=True,
 with torch.no_grad():
     outputs = model(**batch, labels=torch.tensor([1, 0]))
     print(outputs)
-    print('-' * 50)
     predictions = F.softmax(outputs.logits, dim=1)
     print(predictions)
-    print('-' * 50)
     labels = torch.argmax(predictions, dim=1)
     print(labels)
-    print('-' * 50)
     labels = [model.config.id2label[label_id] for label_id in labels.tolist()]
     print(labels)
