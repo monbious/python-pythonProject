@@ -6,3 +6,4 @@
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/vcs.xml
 .vscode/settings.json
+snake_pygame/__pycache__
