@@ -11,6 +11,8 @@ MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
 LR = 0.001
 
+random_moves = 80
+
 model_file_name = './model/model.pth'
 
 
@@ -23,7 +25,10 @@ class Agent:
         model = Linear_QNet(11, 256, 3)
         if os.path.exists(model_file_name):
             model.load_state_dict(torch.load(model_file_name))
+            model.eval()
             print('读取模型成功...')
+            global random_moves
+            random_moves = 0
         self.model = model
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
@@ -92,7 +97,7 @@ class Agent:
 
     def get_action(self, state):
         # random moves: tradeoff exploration / exploitation
-        self.epsilon = 80 - self.n_games
+        self.epsilon = random_moves - self.n_games
         final_move = [0, 0, 0]
         if random.randint(0, 200) < self.epsilon:
             move = random.randint(0, 2)
