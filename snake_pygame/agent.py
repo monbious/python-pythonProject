@@ -22,13 +22,17 @@ class Agent:
         self.epsilon = 0  # randomness
         self.gamma = 0.9  # discount rate
         self.memory = deque(maxlen=MAX_MEMORY)  # popleft()
+        self.record = 0
         model = Linear_QNet(11, 256, 3)
         if os.path.exists(model_file_name):
-            model.load_state_dict(torch.load(model_file_name))
+            checkpoint = torch.load(model_file_name)
+            model.load_state_dict(checkpoint['model_state_dict'])
             model.eval()
-            print('读取模型成功...')
-            global random_moves
-            random_moves = 0
+            self.record = checkpoint['record']
+            print(f'读取模型成功...当前最高分: {self.record}')
+            if self.record > 30:
+                global random_moves
+                random_moves = 0
         self.model = model
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
@@ -115,7 +119,7 @@ def train():
     plot_scores = []
     plot_mean_scores = []
     total_score = 0
-    record = 0
+    # record = 0
     agent = Agent()
     game = SnakeGameAI()
     while True:
@@ -141,11 +145,11 @@ def train():
             agent.n_games += 1
             agent.train_long_memory()
 
-            if score > record:
-                record = score
-                agent.model.save()
+            if score > agent.record:
+                agent.record = score
+                agent.model.save(record=agent.record)
 
-            print('Game:', agent.n_games, 'Score:', score, 'Record:', record)
+            print('Game:', agent.n_games, 'Score:', score, 'Record:', agent.record)
 
             plot_scores.append(score)
             total_score += score
