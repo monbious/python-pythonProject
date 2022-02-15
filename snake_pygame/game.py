@@ -74,9 +74,14 @@ class SnakeGameAI:
         # 3. check if game over
         reward = 0
         game_over = False
-        if self.is_collision() or self.frame_iteration > 100*len(self.snake):
+        if self.is_collision_in() or self.frame_iteration > 60*len(self.snake):
             game_over = True
             reward = -10
+            return reward, game_over, self.score
+
+        if self.is_collision_out():
+            game_over = True
+            reward = -10 - len(self.snake)/10
             return reward, game_over, self.score
 
         # 4. place new food or just move
@@ -103,6 +108,22 @@ class SnakeGameAI:
         if pt in self.snake[1:]:
             return True
 
+        return False
+
+    def is_collision_out(self, pt=None):
+        if pt is None:
+            pt = self.head
+        # hits boundary
+        if pt.x > self.w - BLOCK_SIZE or pt.x < 0 or pt.y > self.h - BLOCK_SIZE or pt.y < 0:
+            return True
+        return False
+
+    def is_collision_in(self, pt=None):
+        if pt is None:
+            pt = self.head
+        # hits itself
+        if pt in self.snake[1:]:
+            return True
         return False
 
     def _update_ui(self):

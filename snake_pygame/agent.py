@@ -23,7 +23,7 @@ class Agent:
         self.gamma = 0.9  # discount rate
         self.memory = deque(maxlen=MAX_MEMORY)  # popleft()
         self.record = 0
-        model = Linear_QNet(11, 256, 3)
+        model = Linear_QNet(12, 256, 3)
         if os.path.exists(model_file_name):
             checkpoint = torch.load(model_file_name)
             model.load_state_dict(checkpoint['model_state_dict'])
@@ -48,7 +48,13 @@ class Agent:
         dir_u = game.direction == Direction.UP
         dir_d = game.direction == Direction.DOWN
 
+        snake_length = len(game.snake)/100
+
         state = [
+
+            # len(snake)
+            snake_length,
+
             # Danger straight
             (dir_r and game.is_collision(point_r)) or
             (dir_l and game.is_collision(point_l)) or
